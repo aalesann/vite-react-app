@@ -6,4 +6,16 @@
 
 >>> ### React + Vite
 
+Instalación de dependencias: 
+```bash
+npm install 
+```
+Ejecutar el proyecto:
+```bash
+npm run dev 
+```
+
+
+
+
 ![https://miro.medium.com/max/1400/1*Z6j82iboYF98xm_fijHm9w.png](https://miro.medium.com/max/1400/1*Z6j82iboYF98xm_fijHm9w.png)
