@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react'
+import Swal from 'sweetalert2'
 import { TaskContext } from '../context/TaskContext'
 import { getTasks } from '../selectors/taskSelectors'
 import { type } from '../types/types'
@@ -10,12 +11,18 @@ export const TodosScreen = () => {
 
   useEffect(() => {
     (async () => {
-      const data = await getTasks();
-      console.log(data);
-      taskDispatch({
-        types: type.SET_ALL_TASKS,
-        payload: data
-      });
+
+      try {
+        const data = await getTasks();
+        console.log(data);
+        taskDispatch({
+          types: type.SET_ALL_TASKS,
+          payload: data
+        });
+      } catch (error) {
+        Swal.fire('Error', 'Error al obtener las tareas', 'error');
+      }
+
     })();
   }, [])
 
@@ -41,11 +48,11 @@ export const TodosScreen = () => {
                   </p>
                 </div>
                 <div className="card-footer p-2 mx-2">
-                <button
-                  className={`btn w-100 ${task.isDone ? 'btn-danger': 'btn-success' }`}
-                >
-                  { (task.isDone) ? 'Marcar No Completada' : 'Marcar Completada'}
-                </button>
+                  <button
+                    className={`btn w-100 ${task.isDone ? 'btn-danger' : 'btn-success'}`}
+                  >
+                    {(task.isDone) ? 'Marcar No Completada' : 'Marcar Completada'}
+                  </button>
                 </div>
               </div>
             ))

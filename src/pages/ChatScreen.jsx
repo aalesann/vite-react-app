@@ -9,15 +9,37 @@ export const ChatScreen = () => {
     const { socket } = useContext(SocketContext);
 
     const [allMessages, setAllMessages] = useState([]);
-    console.log(user)
 
     const [chat, setChat] = useState({
         message: '',
-        user: user.username
+        user: user.username,
     });
 
     const { message } = chat;
     console.log(chat.username)
+
+    if(allMessages.length > 0) {
+        console.log(allMessages)
+    }
+
+    // Cargar los mensajes al momento
+    useEffect(() => {
+        socket.emit('current-messages');
+
+        return () => {
+            socket.off('current-messages');
+        }
+    }, [])
+
+    useEffect(() => {
+        socket.on('current-messages', (messagesList) => {
+            setAllMessages(messagesList);
+        })
+
+        return () => {
+            socket.off('current-messages');
+        }
+    }, [])
 
     // ESCUCHA NUEVOS MENSAJES
     useEffect(() => {
@@ -42,12 +64,18 @@ export const ChatScreen = () => {
         e.preventDefault();
         if (chat.message.length < 1) return alert('No puede enviar mensajes vacíos!')
 
-        socket.emit('new-message', chat)
+        // Fecha y hora del mensaje
+        const date = new Date().toLocaleDateString();
+
 
         setChat({
             ...chat,
-            message: ''
+            date,
         })
+
+
+
+        socket.emit('new-message', chat)
     }
 
 
@@ -63,6 +91,7 @@ export const ChatScreen = () => {
                                 allMessages.map((message, i) => (
                                     <li key={i} className={`alert alert-${(message.user === user.username) ? 'primary text-start' : 'secondary text-end'}`}>
                                         <p>{message.user}: <span> {message.message}</span></p>
+                                        <p className='text-end'>{message.date} - {message.time}</p>
                                     </li>
                                 ))
                             )

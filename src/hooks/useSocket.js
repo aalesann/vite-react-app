@@ -3,6 +3,7 @@ import io from 'socket.io-client'
 
 export const useSocket = (serverPath) => {
 
+    // useMemo es para que no se vuelva a crear el socket
     const socket = useMemo(() => io.connect(serverPath, {
         transports: ['websocket'],
     }), [serverPath]);
